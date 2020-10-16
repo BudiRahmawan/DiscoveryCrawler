@@ -2,7 +2,7 @@
 // @name            Discovery Crawler
 // @namespace       BudiRahmawan
 // @author          BudiRahmawan
-// @version         0.2.5
+// @version         0.2.6
 // @description     Automatically explore your steam discoveries.
 // @homepage        https://github.com/BudiRahmawan/DiscoveryCrawler/
 // @downloadURL     https://github.com/BudiRahmawan/DiscoveryCrawler/raw/main/DiscoveryCrawler.user.js
@@ -63,7 +63,7 @@ function GM_main() {
                         window.location = 'http://store.steampowered.com/explore/next';
                         $J('.error').html( $J('.error').html() + '<br />(Removing from queue)' );
                     }).fail( function() {
-                        $J('.error').html( $J('.error').html() + '<br />(Could not remove from queue. Reload or try <a href="https://www.reddit.com/r/Steam/comments/3r2k4y/how_do_i_complete_discovery_queue_if_every_queue/cwkrrzf">removing manually.</a>)' );
+                        $J('.error').html( $J('.error').html() + '<br />(Could not remove from queue. Reload or try removing manually.</a>)' );
                     } );
                 }
                 else {
