@@ -2,7 +2,7 @@
 // @name            Discovery Crawler
 // @namespace       BudiRahmawan
 // @author          BudiRahmawan
-// @version         0.4.0
+// @version         0.4.7
 // @description     Automatically explore your steam discoveries.
 // @homepage        https://github.com/BudiRahmawan/DiscoveryCrawler/
 // @downloadURL     https://github.com/BudiRahmawan/DiscoveryCrawler/raw/main/DiscoveryCrawler.user.js
@@ -48,17 +48,23 @@ function GM_main() {
                     if ( !$J('.discovery_queue_winter_sale_cards_header:contains(' + comeBackTomorrow + ')').length ) {
                         GenerateQueue(0);
                     }
-                    else { $J('.subtext').html( $J('.subtext').html() + '<br />(Script stopped)' ); }
+                    else {
+                        $J('.subtext').html( $J('.subtext').html() + '<br />(Script stopped)' );
+                        document.querySelector('#discovery_queue_ctn').insertAdjacentHTML('beforeend', '(Script stopped)');
+                    }
                 }
-                break;
+            break;
             case 'agecheck':
                 $("span:contains('Enter')");
                 jQuery('#ageYear').val (1915).trigger ('change');
                 DoAgeGateSubmit();
-                break;
+            break;
             case 'app':
             default:
-                if ( $J('.error:contains(' + notInRegion + ')').length ) {
+                if ( window.location.pathname.split('/')[3] == 'agecheck' ) {
+                    document.querySelector('.btn_grey_white_innerfade.btn_medium').click();
+                }
+                else if ( $J('.error:contains(' + notInRegion + ')').length ) {
                     var unavailable_app = window.location.pathname.split('/')[2];
                     $J.post("/app/7", { sessionid: g_sessionID, appid_to_clear_from_queue: unavailable_app })
                     .done( function ( data ) {
@@ -72,24 +78,21 @@ function GM_main() {
                     $J('.queue_sub_text').text("Loading next in queue");
                     $J('#next_in_queue_form').submit();
                 }
-                break;
+            break;
         }
-
     }
 }
 
 addJS_Node(null, null, GM_main);
 function addJS_Node(text, s_URL, funcToRun, runOnLoad) {
-   var D                                   = document;
-   var scriptNode                          = D.createElement ('script');
-   if (runOnLoad) {
-    scriptNode.addEventListener ("load", runOnLoad, false);
-   }
-   scriptNode.type                         = "text/javascript";
-   if (text)       scriptNode.textContent  = text;
-   if (s_URL)      scriptNode.src          = s_URL;
-   if (funcToRun)  scriptNode.textContent  = '(' + funcToRun.toString() + ')()';
+	var D                                   = document;
+	var scriptNode                          = D.createElement ('script');
+	if (runOnLoad) { scriptNode.addEventListener ("load", runOnLoad, false); }
+	scriptNode.type                         = "text/javascript";
+	if (text)       scriptNode.textContent  = text;
+	if (s_URL)      scriptNode.src          = s_URL;
+	if (funcToRun)  scriptNode.textContent  = '(' + funcToRun.toString() + ')()';
 
-   var targ = D.getElementsByTagName ('head')[0] || D.body || D.documentElement;
-   targ.appendChild (scriptNode);
+	var targ = D.getElementsByTagName ('head')[0] || D.body || D.documentElement;
+	targ.appendChild (scriptNode);
 }
