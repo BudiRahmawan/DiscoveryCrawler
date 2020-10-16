@@ -2,7 +2,7 @@
 // @name            Discovery Crawler
 // @namespace       BudiRahmawan
 // @author          BudiRahmawan
-// @version         0.4.1
+// @version         0.4.0
 // @description     Automatically explore your steam discoveries.
 // @homepage        https://github.com/BudiRahmawan/DiscoveryCrawler/
 // @downloadURL     https://github.com/BudiRahmawan/DiscoveryCrawler/raw/main/DiscoveryCrawler.user.js
