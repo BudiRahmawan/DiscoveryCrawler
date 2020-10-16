@@ -2,7 +2,7 @@
 // @name            Discovery Crawler
 // @namespace       BudiRahmawan
 // @author          BudiRahmawan
-// @version         0.2.5
+// @version         0.4.1
 // @description     Automatically explore your steam discoveries.
 // @homepage        https://github.com/BudiRahmawan/DiscoveryCrawler/
 // @downloadURL     https://github.com/BudiRahmawan/DiscoveryCrawler/raw/main/DiscoveryCrawler.user.js
@@ -17,6 +17,8 @@
 
 function GM_main() {
     window.onload = function () {
+        var comeBackTomorrow = "Come back tomorrow to earn more cards by browsing your Discovery Queue!";
+        var notInRegion = "This item is currently unavailable in your region";
         var GenerateQueue = function( queueNumber )
         {
             $J('.home_actions_ctn').css( 'visibility', 'visible' );
@@ -26,13 +28,11 @@ function GM_main() {
             {
                 var requests = [];
                 for( var i = 0; i < data.queue.length; i++ )
-                {
-                    requests.push( jQuery.post( 'http://store.steampowered.com/app/10', { appid_to_clear_from_queue: data.queue[ i ], sessionid: g_sessionID } ) );
-                }
+                { requests.push( jQuery.post( 'http://store.steampowered.com/app/10', { appid_to_clear_from_queue: data.queue[ i ], sessionid: g_sessionID } ) ); }
                 jQuery.when.apply( jQuery, requests ).done( function()
                 {
                     if( queueNumber < 3 )
-                    { GenerateQueue( queueNumber );}
+                    { GenerateQueue( queueNumber ); }
                     else
                     {
                         $J('#refresh_queue_btn').html("<span>Queues finished. Reloading.</span>");
@@ -44,10 +44,12 @@ function GM_main() {
         var path = window.location.pathname.split('/')[1];
         switch(path) {
             case 'explore':
-                if ( !$J('.discovery_queue_winter_sale_cards_header:contains("You\'ve completed your queue and have unlocked 3 event trading cards!")') ) {
-                    GenerateQueue(0);
+                if ( $J('.discovery_queue_winter_sale_cards_header').length ) {
+                    if ( !$J('.discovery_queue_winter_sale_cards_header:contains(' + comeBackTomorrow + ')').length ) {
+                        GenerateQueue(0);
+                    }
+                    else { $J('.subtext').html( $J('.subtext').html() + '<br />(Script stopped)' ); }
                 }
-                else { $J('.subtext').html( $J('.subtext').html() + '<br />(Script stopped)' ); }
                 break;
             case 'agecheck':
                 $("span:contains('Enter')");
@@ -56,22 +58,23 @@ function GM_main() {
                 break;
             case 'app':
             default:
-                if ( $J('.error:contains("This item is currently unavailable in your region")') ) {
+                if ( $J('.error:contains(' + notInRegion + ')').length ) {
                     var unavailable_app = window.location.pathname.split('/')[2];
                     $J.post("/app/7", { sessionid: g_sessionID, appid_to_clear_from_queue: unavailable_app })
                     .done( function ( data ) {
                         window.location = 'http://store.steampowered.com/explore/next';
                         $J('.error').html( $J('.error').html() + '<br />(Removing from queue)' );
                     }).fail( function() {
-                        $J('.error').html( $J('.error').html() + '<br />(Could not remove from queue. Reload or try <a href="https://www.reddit.com/r/Steam/comments/3r2k4y/how_do_i_complete_discovery_queue_if_every_queue/cwkrrzf">removing manually.</a>)' );
+                        $J('.error').html( $J('.error').html() + '<br />(Could not remove from queue. Reload or try removing manually.</a>)' );
                     } );
                 }
-                else {
+                else if ( $J('#next_in_queue_form').length ) {
                     $J('.queue_sub_text').text("Loading next in queue");
                     $J('#next_in_queue_form').submit();
                 }
                 break;
         }
+
     }
 }
 
@@ -89,4 +92,4 @@ function addJS_Node(text, s_URL, funcToRun, runOnLoad) {
 
    var targ = D.getElementsByTagName ('head')[0] || D.body || D.documentElement;
    targ.appendChild (scriptNode);
- }
+}
