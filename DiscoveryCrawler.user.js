@@ -2,7 +2,7 @@
 // @name            Discovery Crawler
 // @namespace       BudiRahmawan
 // @author          BudiRahmawan
-// @version         0.2.4
+// @version         0.2.5
 // @description     Automatically explore your steam discoveries.
 // @homepage        https://github.com/BudiRahmawan/DiscoveryCrawler/
 // @downloadURL     https://github.com/BudiRahmawan/DiscoveryCrawler/raw/main/DiscoveryCrawler.user.js
@@ -27,7 +27,7 @@ function GM_main() {
                 var requests = [];
                 for( var i = 0; i < data.queue.length; i++ )
                 {
-                    requests.push( jQuery.post( 'http://store.steampowered.com/app/10', { appid_to_clear_from_queue: data.queue[ i ], sessionid: g_sessionID } ) )
+                    requests.push( jQuery.post( 'http://store.steampowered.com/app/10', { appid_to_clear_from_queue: data.queue[ i ], sessionid: g_sessionID } ) );
                 }
                 jQuery.when.apply( jQuery, requests ).done( function()
                 {
